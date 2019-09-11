@@ -3,7 +3,7 @@
     "puppet.example.com": {
       ":ip": "192.168.32.5",
       "ports": [],
-      ":memory": 1024,
+      ":memory": 4096,
       ":bootstrap": "bootstrap-master.sh"
     },
     "node01.example.com": {

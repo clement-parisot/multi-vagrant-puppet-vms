@@ -6,7 +6,10 @@ if ps aux | grep "puppet agent" | grep -v grep 2> /dev/null
 then
     echo "Puppet Agent is already installed. Moving on..."
 else
-    sudo apt-get install -yq puppet
+    wget https://apt.puppetlabs.com/puppet5-release-bionic.deb && \
+    sudo dpkg -i puppet5-release-bionic.deb && \
+    sudo apt-get update -yq && sudo apt-get upgrade -yq && \
+    sudo apt-get install -yq puppet-agent
 fi
 
 if cat /etc/crontab | grep puppet 2> /dev/null
@@ -15,10 +18,10 @@ then
 else
     sudo apt-get update -yq && sudo apt-get upgrade -yq
 
-    sudo puppet resource cron puppet-agent ensure=present user=root minute=30 \
+    sudo /opt/puppetlabs/bin/puppet resource cron puppet-agent ensure=present user=root minute=30 \
         command='/usr/bin/puppet agent --onetime --no-daemonize --splay'
 
-    sudo puppet resource service puppet ensure=running enable=true
+    sudo /opt/puppetlabs/bin/puppet resource service puppet ensure=running enable=true
 
     # Configure /etc/hosts file
     echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
@@ -28,7 +31,7 @@ else
     echo "192.168.32.20   node02.example.com  node02" | sudo tee --append /etc/hosts 2> /dev/null
 
     # Add agent section to /etc/puppet/puppet.conf
-    echo "" && echo "[agent]\nserver=puppet" | sudo tee --append /etc/puppet/puppet.conf 2> /dev/null
+    echo "" && echo "[agent]\nserver=puppet" | sudo tee --append /etc/puppetlabs/puppet/puppet.conf 2> /dev/null
 
-    sudo puppet agent --enable
+    sudo /opt/puppetlabs/bin/puppet agent --enable
 fi

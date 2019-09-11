@@ -9,13 +9,13 @@ nodes_config = (JSON.parse(File.read("nodes.json")))['nodes']
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/bionic64"
 
   nodes_config.each do |node|
     node_name   = node[0] # name of node
     node_values = node[1] # content of node
 
-    config.vm.define node_name do |config|    
+    config.vm.define node_name do |config|
       # configures all forwarding ports in JSON array
       ports = node_values['ports']
       ports.each do |port|
